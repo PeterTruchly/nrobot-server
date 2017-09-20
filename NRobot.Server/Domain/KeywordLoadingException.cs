@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NRobot.Server.Imp.Domain
+namespace NRobot.Server.Domain
 {
     public class KeywordLoadingException : Exception
     {

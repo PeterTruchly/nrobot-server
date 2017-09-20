@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net.NetworkInformation;
 using System.Text;
-using NRobot.Server.Imp.Domain;
+using NRobot.Server.Domain;
 
-namespace NRobot.Server.Imp.Services
+namespace NRobot.Server.Services
 {
 	/// <summary>
 	/// HTTP Listener service

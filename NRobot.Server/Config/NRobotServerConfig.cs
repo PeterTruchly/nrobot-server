@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using NRobot.Server.Imp.XmlConfig;
+using NRobot.Server.XmlConfig;
 
-namespace NRobot.Server.Imp.Config
+namespace NRobot.Server.Config
 {
 	/// <summary>
 	/// Main configuration for NRobot service
 	/// </summary>
 	public class NRobotServerConfig
 	{
-		
-
         public int Port { get; set; }
-        public Dictionary<String, LibraryConfig> AssemblyConfigs = new Dictionary<String, LibraryConfig>();
-
+        public readonly Dictionary<String, LibraryConfig> AssemblyConfigs = new Dictionary<String, LibraryConfig>();
 
         private void AddDomainConfig(LibraryConfig config)
         {
@@ -36,18 +33,5 @@ namespace NRobot.Server.Imp.Config
             }
             return result;
         }
-
-
-
-
-
-
-
-
-       
-		
-		
 	}
-	
-	
 }

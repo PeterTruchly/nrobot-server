@@ -1,6 +1,6 @@
 ﻿using CookComputing.XmlRpc;
 
-namespace NRobot.Server.Imp.Services
+namespace NRobot.Server.Services
 {
 	/// <summary>
 	/// Description of IRobotService.

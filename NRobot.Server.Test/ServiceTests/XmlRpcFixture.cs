@@ -1,8 +1,7 @@
 ﻿using System;
 using CookComputing.XmlRpc;
-using NRobot.Server.Imp.Config;
-using NRobot.Server.Imp.Services;
-using NRobot.Server.Imp;
+using NRobot.Server.Config;
+using NRobot.Server.Services;
 using NUnit.Framework;
 
 namespace NRobot.Server.Test.ServiceTests

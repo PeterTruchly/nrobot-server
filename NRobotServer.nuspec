@@ -10,16 +10,13 @@
         <tags>robotframework robot framework test automation</tags>
         <language>en-US</language>
 		<dependencies>
-			<group targetFramework="net46">
+			<group targetFramework="net47">
 				<dependency id="log4net" version="2.0.3" />
 				<dependency id="xmlrpcnet" version="2.5.0" />
 			</group>
 		</dependencies>
 	 </metadata>
 	<files>
-		<file src="build\NRobot.Server.Imp.dll" target="lib\net45"/>
-		<file src="build\NRobot.Server.Exceptions.dll" target="lib\net45"/>
-		<file src="build\NRobot.Server.exe" target="lib\net45" />
-		<file src="build\NRobot.Server.exe.config" target="lib\net45" />
+		<file src="build\NRobot.Server.dll" target="lib\net47"/>
 	</files>
 </package>

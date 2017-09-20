@@ -1,4 +1,4 @@
-﻿namespace NRobot.Server.Imp.Config
+﻿namespace NRobot.Server.Config
 {
     public class LibraryConfig
     {

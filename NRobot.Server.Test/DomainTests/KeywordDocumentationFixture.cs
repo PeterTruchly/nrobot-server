@@ -1,6 +1,6 @@
 ﻿using System;
-using NRobot.Server.Imp.Config;
-using NRobot.Server.Imp.Domain;
+using NRobot.Server.Config;
+using NRobot.Server.Domain;
 using NUnit.Framework;
 
 namespace NRobot.Server.Test.DomainTests

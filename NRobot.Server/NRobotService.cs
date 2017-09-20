@@ -1,11 +1,10 @@
 ﻿using System;
 using log4net;
-using System.Security.Principal;
-using NRobot.Server.Imp.Domain;
-using NRobot.Server.Imp.Config;
-using NRobot.Server.Imp.Services;
+using NRobot.Server.Config;
+using NRobot.Server.Domain;
+using NRobot.Server.Services;
 
-namespace NRobot.Server.Imp
+namespace NRobot.Server
 {
 	/// <summary>
 	/// The overall NRobot service
@@ -28,8 +27,6 @@ namespace NRobot.Server.Imp
             _httpservice = new HttpService(_rpcService, _keywordManager, config.Port);
             LoadKeywords();
         }
-		
-
 		
 		/// <summary>
 		/// Loads the keyword libraries
@@ -57,35 +54,17 @@ namespace NRobot.Server.Imp
 		/// </summary>
 		public void StartAsync()
 		{
-			//check permissions
-			if (!IsAdministrator())
-			{
-				Log.Error("Service not started as administrator");
-				throw new UnauthorizedAccessException("Service not started as administrator");
-			}
 			_httpservice.StartAsync();
             Log.Debug("HTTP listener started");
 		}
-		
-		/// <summary>
-		/// Stops the service sync
-		/// </summary>
-		public void Stop()
-		{
-			_httpservice.Stop();
-            Log.Debug("HTTP listener stopped");
-		}
-		
-		/// <summary>
-		/// Checks if identity is admin
-		/// </summary>
-		private bool IsAdministrator()
-    	{
-	        var identity = WindowsIdentity.GetCurrent();
-	        var principal = new WindowsPrincipal(identity);
-	        return principal.IsInRole(WindowsBuiltInRole.Administrator);
-    	}
 
-		
+	    /// <summary>
+	    /// Stops the service sync
+	    /// </summary>
+	    public void Stop()
+	    {
+	        _httpservice.Stop();
+	        Log.Debug("HTTP listener stopped");
+	    }
 	}
 }

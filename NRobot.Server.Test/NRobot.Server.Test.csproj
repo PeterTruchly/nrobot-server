@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NRobot.Server.Test</RootNamespace>
     <AssemblyName>NRobot.Server.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -61,13 +61,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NRobot.Server.Exceptions\NRobot.Server.Exceptions.csproj">
-      <Project>{9e46a153-4c5e-4f4f-9083-5e4569a21130}</Project>
-      <Name>NRobot.Server.Exceptions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NRobot.Server.Imp\NRobot.Server.Imp.csproj">
+    <ProjectReference Include="..\NRobot.Server\NRobot.Server.csproj">
       <Project>{1bd61a13-da09-477a-8a42-4072681df950}</Project>
-      <Name>NRobot.Server.Imp</Name>
+      <Name>NRobot.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

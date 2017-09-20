@@ -2,12 +2,12 @@
 using System.Net;﻿  ﻿
 using CookComputing.XmlRpc;
 using log4net;
-using NRobot.Server.Imp.Domain;
-using NRobot.Server.Imp.Helpers;
+using NRobot.Server.Domain;
+using NRobot.Server.Helpers;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace NRobot.Server.Imp.Services
+namespace NRobot.Server.Services
 {
 
 	/// <summary>

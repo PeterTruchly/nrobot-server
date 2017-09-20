@@ -1,7 +1,7 @@
 ﻿using System;
 using NRobot.Server.Exceptions;
 
-namespace NRobot.Server.Imp.Domain
+namespace NRobot.Server.Domain
 {
     
     public enum RunKeywordStatus

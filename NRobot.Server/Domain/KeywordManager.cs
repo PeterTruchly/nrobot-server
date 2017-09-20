@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.IO;
 using log4net;
-using NRobot.Server.Imp.Config;
+using NRobot.Server.Config;
 
-namespace NRobot.Server.Imp.Domain
+namespace NRobot.Server.Domain
 {
     /// <summary>
     /// Manages all loaded keywords

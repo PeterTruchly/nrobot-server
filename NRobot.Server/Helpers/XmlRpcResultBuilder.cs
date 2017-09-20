@@ -1,8 +1,8 @@
 ﻿using System;
 using CookComputing.XmlRpc;
-using NRobot.Server.Imp.Domain;
+using NRobot.Server.Domain;
 
-namespace NRobot.Server.Imp.Helpers
+namespace NRobot.Server.Helpers
 {
 	/// <summary>
 	/// Builds an XmlRpc Result from a command result

@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace NRobot.Server.Imp.Domain
+namespace NRobot.Server.Domain
 {
 	/// <summary>
 	/// Encapsulates a keyword as a method and documentation

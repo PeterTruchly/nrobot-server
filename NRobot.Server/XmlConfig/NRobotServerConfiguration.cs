@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace NRobot.Server.Imp.XmlConfig
+namespace NRobot.Server.XmlConfig
 {
 	/// <summary>
 	/// Configuration section handler
