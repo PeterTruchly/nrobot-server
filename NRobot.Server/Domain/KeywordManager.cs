@@ -39,10 +39,10 @@ namespace NRobot.Server.Domain
                 //check if already loaded type
                 if (_loadedKeywords.ContainsKey(config.TypeName))
                 {
-                    Log.Debug(String.Format("Type {0} is already loaded", config.TypeName));
+                    Log.Debug($"Type {config.TypeName} is already loaded");
                     return;
                 }
-                Log.Debug(String.Format("Loading keywords from type : {0}", config.TypeName));
+                Log.Debug($"Loading keywords from type : {config.TypeName}");
 
                 //get instance
                 var kwinstance = Activator.CreateInstance(config.Assembly, config.TypeName).Unwrap();
@@ -58,7 +58,7 @@ namespace NRobot.Server.Domain
                     }
                     else
                     {
-                        throw new Exception(String.Format("Xml documentation file not found : {0}", config.Documentation));
+                        throw new Exception($"Xml documentation file not found : {config.Documentation}");
                     }
                 }
 
@@ -70,16 +70,16 @@ namespace NRobot.Server.Domain
                     if (HasValidSignature(method))
                     {
                         var keyword = new Keyword(kwinstance, method, kwdocumentation);
-                        if (_loadedKeywords.ContainsKey(keyword.FriendlyName)) throw new Exception(String.Format("{0} keyword is duplicated", keyword.FriendlyName));
+                        if (_loadedKeywords.ContainsKey(keyword.FriendlyName)) throw new Exception($"{keyword.FriendlyName} keyword is duplicated");
                         keywords.Add(keyword);
                     }
                 }
                 _loadedKeywords.Add(config.TypeName, keywords);
-                Log.Debug(String.Format("Loaded keywords : {0}", String.Join(",", keywords.Select(k => k.FriendlyName).ToArray())));
+                Log.Debug($"Loaded keywords : {String.Join(",", keywords.Select(k => k.FriendlyName).ToArray())}");
             }
             catch (Exception e)
             {
-                Log.Error(String.Format("Unable to load keyword library, {0}", e));
+                Log.Error($"Unable to load keyword library, {e}");
                 throw new KeywordLoadingException("Unable to load keyword library",e);
             }
         }
@@ -169,7 +169,7 @@ namespace NRobot.Server.Domain
         /// </summary>
         public Keyword GetKeyword(string typename, string friendlyname)
         {
-            if (!_loadedKeywords.ContainsKey(typename)) throw new Exception(String.Format("Keyword {0} not found in type {1}", friendlyname,typename));
+            if (!_loadedKeywords.ContainsKey(typename)) throw new Exception($"Keyword {friendlyname} not found in type {typename}");
             var keywords = _loadedKeywords[typename];
             foreach (var keyword in keywords)
             {
@@ -178,7 +178,7 @@ namespace NRobot.Server.Domain
                     return keyword;
                 }
             }
-            throw new Exception(String.Format(String.Format("Keyword {0} not found in type {1}", friendlyname,typename)));
+            throw new Exception($"Keyword {friendlyname} not found in type {typename}");
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace NRobot.Server.Domain
         public string[] GetKeywordNamesForType(string typename)
         {
             if (String.IsNullOrEmpty(typename)) throw new Exception("No type name specified");
-            if (!_loadedKeywords.ContainsKey(typename)) throw new Exception(String.Format("Type {0} is not loaded", typename));
+            if (!_loadedKeywords.ContainsKey(typename)) throw new Exception($"Type {typename} is not loaded");
             return _loadedKeywords[typename].Select(k => k.FriendlyName).ToArray();
         }
 

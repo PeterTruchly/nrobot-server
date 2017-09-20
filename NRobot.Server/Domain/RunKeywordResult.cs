@@ -53,7 +53,7 @@ namespace NRobot.Server.Domain
                     kwReturn = KeywordReturn.ToString();
                 }
             }
-            return string.Format("[KeywordResult Status={0}, Output={1}, Return={2}, Error={3}, Traceback={4}, Duration={5}, ErrorType={6}]", KeywordStatus, KeywordOutput, kwReturn, KeywordError, KeywordTraceback, KeywordDuration, KeywordErrorType);
+            return $"[KeywordResult Status={KeywordStatus}, Output={KeywordOutput}, Return={kwReturn}, Error={KeywordError}, Traceback={KeywordTraceback}, Duration={KeywordDuration}, ErrorType={KeywordErrorType}]";
 		}
 		
 		/// <summary>
@@ -77,7 +77,5 @@ namespace NRobot.Server.Domain
                 KeywordErrorType = RunKeywordErrorTypes.Fatal;
 			}
 		}
-
-
     }
 }

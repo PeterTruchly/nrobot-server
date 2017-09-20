@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CookComputing.XmlRpc;
 using NRobot.Server.Config;
 using NRobot.Server.Services;
@@ -22,29 +23,23 @@ namespace NRobot.Server.Test.ServiceTests
         public void Setup()
         {
             //start service
-            var config = new NRobotServerConfig();
-            config.Port = 8270;
-            config.AssemblyConfigs.Add("NRobot.Server.Test.Keywords.TestKeywords",
-                new LibraryConfig()
-                {
+            var config = new NRobotServerConfig(new List<LibraryConfig>{
+                new LibraryConfig(){
                     Assembly = "NRobot.Server.Test",
                     TypeName = "NRobot.Server.Test.Keywords.TestKeywords",
                     Documentation = "NRobot.Server.Test.xml"
-                });
-            config.AssemblyConfigs.Add("NRobot.Server.Test.Keywords.WithDocumentationClass",
-                new LibraryConfig()
-                {
+                },
+                new LibraryConfig() {
                     Assembly = "NRobot.Server.Test",
                     TypeName = "NRobot.Server.Test.Keywords.WithDocumentationClass",
                     Documentation = "NRobot.Server.Test.xml"
-                });
-            config.AssemblyConfigs.Add("NRobot.Server.Test.Keywords.RunKeyword",
-                new LibraryConfig()
-                {
+                },
+                new LibraryConfig() {
                     Assembly = "NRobot.Server.Test",
                     TypeName = "NRobot.Server.Test.Keywords.RunKeyword",
                     Documentation = "NRobot.Server.Test.xml"
-                });
+                }
+            }, 8270);            
             _service = new NRobotService(config);
             _service.StartAsync();
         }

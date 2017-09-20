@@ -2,6 +2,7 @@
 
 namespace NRobot.Server.XmlConfig
 {
+	/// <inheritdoc />
 	/// <summary>
 	/// Configuration section handler
 	/// </summary>
@@ -16,22 +17,9 @@ namespace NRobot.Server.XmlConfig
 		}
 		
 		[ConfigurationProperty("assemblies")]
-		public AssemblyElementCollection Assemblies
-		{
-			get
-			{
-				return (AssemblyElementCollection)this["assemblies"] ?? new AssemblyElementCollection();
-			}
-		}
-		
-		[ConfigurationProperty("port")]
-		public PortElement Port
-		{
-			get
-			{
-				return (PortElement)this["port"] ?? new PortElement();
-			}
-		}
-		
+		public AssemblyElementCollection Assemblies => (AssemblyElementCollection)this["assemblies"] ?? new AssemblyElementCollection();
+
+	    [ConfigurationProperty("port")]
+		public PortElement Port => (PortElement)this["port"] ?? new PortElement();
 	}
 }

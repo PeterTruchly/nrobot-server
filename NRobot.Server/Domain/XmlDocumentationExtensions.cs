@@ -18,13 +18,13 @@ namespace NRobot.Server.Domain
 	/// </summary>
 	public static class XmlDocumentationExtensions {
 	
-	    private static Dictionary<string, XDocument> _cachedXml;
+	    private static readonly Dictionary<string, XDocument> CachedXml;
 	
 	    /// <summary>
 	    /// Static constructor.
 	    /// </summary>
 	    static XmlDocumentationExtensions() {
-	        _cachedXml = new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
+	        CachedXml = new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
 	    }
 	
 	    /// <summary>
@@ -78,11 +78,11 @@ namespace NRobot.Server.Domain
 	                break;
 	
 	            default:
-	                throw new ArgumentException("Unknown member type", "member");
+	                throw new ArgumentException("Unknown member type", nameof(member));
 	        }
 	
 	        // elements are of the form "M:Namespace.Class.Method"
-	        return String.Format("{0}:{1}", prefixCode, memberName);
+	        return $"{prefixCode}:{memberName}";
 	    }
 	
 	    /// <summary>
@@ -105,10 +105,10 @@ namespace NRobot.Server.Domain
 	        AssemblyName assemblyName = member.Module.Assembly.GetName();
 	        XDocument xml = null;
 	
-	        if (_cachedXml.ContainsKey(assemblyName.FullName))
-	            xml = _cachedXml[assemblyName.FullName];
+	        if (CachedXml.ContainsKey(assemblyName.FullName))
+	            xml = CachedXml[assemblyName.FullName];
 	        else
-	            _cachedXml[assemblyName.FullName] = (xml = XDocument.Load(pathToXmlFile));
+	            CachedXml[assemblyName.FullName] = (xml = XDocument.Load(pathToXmlFile));
 	
 	        return GetXmlDocumentation(member, xml);
 	    }
@@ -120,12 +120,7 @@ namespace NRobot.Server.Domain
 	    /// <param name="xml">XML documentation.</param>
 	    /// <returns>The contents of the summary tag for the member.</returns>
 	    public static string GetXmlDocumentation(this MemberInfo member, XDocument xml) {
-	        return xml.XPathEvaluate(
-	            String.Format(
-	                "string(/doc/members/member[@name='{0}']/summary)",
-	                GetMemberElementName(member)
-	            )
-	        ).ToString().Trim();
+	        return xml.XPathEvaluate($"string(/doc/members/member[@name='{GetMemberElementName(member)}']/summary)").ToString().Trim();
 	    }
 	
 	    /// <summary>
@@ -148,10 +143,10 @@ namespace NRobot.Server.Domain
 	        AssemblyName assemblyName = parameter.Member.Module.Assembly.GetName();
 	        XDocument xml = null;
 	
-	        if (_cachedXml.ContainsKey(assemblyName.FullName))
-	            xml = _cachedXml[assemblyName.FullName];
+	        if (CachedXml.ContainsKey(assemblyName.FullName))
+	            xml = CachedXml[assemblyName.FullName];
 	        else
-	            _cachedXml[assemblyName.FullName] = (xml = XDocument.Load(pathToXmlFile));
+	            CachedXml[assemblyName.FullName] = (xml = XDocument.Load(pathToXmlFile));
 	
 	        return GetXmlDocumentation(parameter, xml);
 	    }
@@ -164,22 +159,13 @@ namespace NRobot.Server.Domain
 	    /// <returns>The contents of the returns/param tag for the parameter.</returns>
 	    public static string GetXmlDocumentation(this ParameterInfo parameter, XDocument xml) {
 	        if (parameter.IsRetval || String.IsNullOrEmpty(parameter.Name))
-	            return xml.XPathEvaluate(
-	                String.Format(
-	                    "string(/doc/members/member[@name='{0}']/returns)",
-	                    GetMemberElementName(parameter.Member)
-	                )
-	            ).ToString().Trim();
+	        {
+	            return xml.XPathEvaluate($"string(/doc/members/member[@name='{GetMemberElementName(parameter.Member)}']/returns)").ToString().Trim();
+	        }
 	        else
-	            return xml.XPathEvaluate(
-	                String.Format(
-	                    "string(/doc/members/member[@name='{0}']/param[@name='{1}'])",
-	                    GetMemberElementName(parameter.Member),
-	                    parameter.Name
-	                )
-	            ).ToString().Trim();
+	        {
+	            return xml.XPathEvaluate($"string(/doc/members/member[@name='{GetMemberElementName(parameter.Member)}']/param[@name='{parameter.Name}'])").ToString().Trim();
+	        }
 	    }
-	
 	}
-	
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Reflection;
 using NRobot.Server.XmlConfig;
 
 namespace NRobot.Server.Config
@@ -10,28 +11,69 @@ namespace NRobot.Server.Config
 	/// </summary>
 	public class NRobotServerConfig
 	{
-        public int Port { get; set; }
-        public readonly Dictionary<String, LibraryConfig> AssemblyConfigs = new Dictionary<String, LibraryConfig>();
+	    public const int PortDefaultValue = 8271;
+	    public int Port { get; }
 
-        private void AddDomainConfig(LibraryConfig config)
-        {
-            if (config == null) throw new ConfigurationErrorsException("Config specified is null");
-            if (String.IsNullOrEmpty(config.TypeName)) throw new ConfigurationErrorsException("Config has not Type defined");
-            AssemblyConfigs.Add(config.TypeName, config);
+	    private readonly List<LibraryConfig> assemblyConfigs = new List<LibraryConfig>();
+        public IEnumerable<LibraryConfig> AssemblyConfigs => assemblyConfigs;
+
+	    public NRobotServerConfig(Assembly assembly, Type t, int port = PortDefaultValue)
+	    {
+	        Port = port;
+	        assemblyConfigs.Add(new LibraryConfig() { Assembly = assembly.FullName, TypeName = t.FullName });
         }
 
-        public static NRobotServerConfig LoadXmlConfiguration()
+	    public NRobotServerConfig(IEnumerable<Tuple<Assembly, Type>> libraries, int port = PortDefaultValue)
+	    {
+	        Port = port;
+	        foreach (var lib in libraries)
+            {
+                assemblyConfigs.Add(new LibraryConfig() { Assembly = lib.Item1.FullName, TypeName = lib.Item2.FullName });
+            }
+	    }
+
+        public NRobotServerConfig(Type t, int port = PortDefaultValue)
         {
-            var xmlconfig = NRobotServerConfiguration.GetConfig();
-            var result = new NRobotServerConfig();
-            //get port
-            result.Port = int.Parse(xmlconfig.Port.Number);
+            Port = port;
+	        assemblyConfigs.Add(new LibraryConfig() { Assembly = Assembly.GetExecutingAssembly().FullName, TypeName = t.FullName });
+        }
+
+	    public NRobotServerConfig(IEnumerable<Type> types, int port = PortDefaultValue)
+	    {
+	        Port = port;
+	        foreach (var type in types)
+            {
+                assemblyConfigs.Add(new LibraryConfig() { Assembly = Assembly.GetExecutingAssembly().FullName, TypeName = type.FullName });
+            }
+	    }
+
+	    public NRobotServerConfig(LibraryConfig library, int port = PortDefaultValue)
+	    {
+	        Port = port;
+            assemblyConfigs.Add(library);
+	    }
+
+        public NRobotServerConfig(IEnumerable<LibraryConfig> libraries, int port = PortDefaultValue)
+	    {
+	        Port = port;
+	        foreach (var lib in libraries)
+            {
+	            assemblyConfigs.Add(lib);
+	        }
+	    }
+
+        public NRobotServerConfig(NRobotServerConfiguration xmlconfig)
+        {
+            //get port number
+            Port = int.Parse(xmlconfig.Port.Number);
+
             //get keyword assemblies
             foreach (AssemblyElement xmlasm in xmlconfig.Assemblies)
             {
-                result.AddDomainConfig(new LibraryConfig() { Assembly = xmlasm.Name, TypeName = xmlasm.Type, Documentation = xmlasm.DocFile });
+                LibraryConfig config = new LibraryConfig() { Assembly = xmlasm.Name, TypeName = xmlasm.Type, Documentation = xmlasm.DocFile };
+                if (string.IsNullOrEmpty(config.TypeName)) throw new ConfigurationErrorsException("Config has not Type defined");
+                assemblyConfigs.Add(config);
             }
-            return result;
         }
 	}
 }

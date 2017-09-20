@@ -38,12 +38,12 @@ namespace NRobot.Server
 			{
 				foreach(var libraryconfig in _config.AssemblyConfigs)
 				{
-                    _keywordManager.AddLibrary(libraryconfig.Value);
+                    _keywordManager.AddLibrary(libraryconfig);
 				}
 			}
 			catch (Exception e)
 			{
-				Log.Error(String.Format("Unable to load all configured keywords, {0}",e.Message));
+				Log.Error($"Unable to load all configured keywords, {e.Message}");
 				throw;
 			}
 			

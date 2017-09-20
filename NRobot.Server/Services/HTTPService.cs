@@ -13,17 +13,16 @@ namespace NRobot.Server.Services
 	/// HTTP Listener service
 	/// </summary>
 	public class HttpService
-	{
-		
+	{		
 		//log4net
 		private static readonly ILog Log = LogManager.GetLogger(typeof(HttpService));
 		
 		//properties
-		private HttpListener _listener;
-		private Thread _httpthread;
-	    private XmlRpcService _rpcService;
-	    private KeywordManager _keywordManager;
-	    private int _port;
+		private readonly HttpListener listener;
+		private Thread httpthread;
+	    private readonly XmlRpcService rpcService;
+	    private readonly KeywordManager keywordManager;
+	    private readonly int port;
 
 		
 		/// <summary>
@@ -31,29 +30,29 @@ namespace NRobot.Server.Services
 		/// </summary>
 		public HttpService(XmlRpcService rpcService, KeywordManager keywordManager, int port)
 		{
-		    _rpcService = rpcService;
-		    _keywordManager = keywordManager;
-		    _port = port;
+		    this.rpcService = rpcService;
+		    this.keywordManager = keywordManager;
+		    this.port = port;
             //setup http listener
-			_listener = new HttpListener();
-			﻿_listener.Prefixes.Add(String.Format("http://*:{0}/", _port));
-            _httpthread = null;
+			listener = new HttpListener();
+			﻿listener.Prefixes.Add($"http://+:{this.port}/");
+            httpthread = null;
 		}
 		
 		/// <summary>
 		/// Background HTTP Listener thread
 		/// </summary>
-		private void DoWork_Listener()
+		private void DoWorkListener()
 		{
-            Log.Debug(String.Format("HTTP Listener started on port {0}", _port));
-            _listener.Start();
+            Log.Debug($"HTTP Listener started on port {port}");
+            listener.Start();
 			﻿while (true)
 		﻿  ﻿  ﻿{
 		﻿  ﻿  ﻿	try
 				{
-					var reqcontext = _listener.GetContext();
+					var reqcontext = listener.GetContext();
 					var method = reqcontext.Request.HttpMethod;
-					Log.Debug(String.Format("Received Http request with method {0}",method));
+					Log.Debug($"Received Http request with method {method}");
                     if (method == "POST")
 					{
                         Task.Factory.StartNew(() => ProcessRequest(reqcontext));
@@ -83,14 +82,14 @@ namespace NRobot.Server.Services
 		/// </summary>
 		private void ProcessRequest(HttpListenerContext context)
 		{
-			Log.Debug(String.Format("Processing Http request for Url : {0}",context.Request.Url));
+			Log.Debug($"Processing Http request for Url : {context.Request.Url}");
             try
             {
-               _rpcService.ProcessRequest(context);
+               rpcService.ProcessRequest(context);
             }
             catch (Exception e)
             {
-                Log.Error(String.Format("Error processing HTTP request : {0}", e));
+                Log.Error($"Error processing HTTP request : {e}");
                 context.Response.StatusCode = 500;
                 context.Response.Close();
             }
@@ -101,12 +100,11 @@ namespace NRobot.Server.Services
 		/// </summary>
 		public void StartAsync()
 		{
-			if (_httpthread == null)
+			if (httpthread == null)
 			{
                 if (IsPortInUse()) throw new Exception("Unable to start service, port already in use");
-                _httpthread = new Thread(DoWork_Listener);
-            	_httpthread.IsBackground = true;
-                _httpthread.Start();
+			    httpthread = new Thread(DoWorkListener){IsBackground = true};
+			    httpthread.Start();
 			}
 		}
 		
@@ -116,17 +114,17 @@ namespace NRobot.Server.Services
 		public void Stop()
 		{
 			//stop listener
-			if (_httpthread!=null)
+			if (httpthread!=null)
 			{
 				//send DELETE method call
                 Log.Debug("Sending HTTP request to stop");
-                WebRequest stopreq = WebRequest.Create(String.Format("http://127.0.0.1:{0}/", _port));
+                WebRequest stopreq = WebRequest.Create($"http://127.0.0.1:{port}/");
                 stopreq.Method = "DELETE";
                 stopreq.GetResponse();
-                _httpthread.Join(Timeout.Infinite);
+                httpthread.Join(Timeout.Infinite);
 			}
-            _httpthread = null;
-            _listener.Close(); //free's the port
+            httpthread = null;
+            listener.Close(); //free's the port
 		}
 
         /// <summary>
@@ -139,7 +137,7 @@ namespace NRobot.Server.Services
             IPEndPoint[] ipEndPoints = ipProperties.GetActiveTcpListeners();
             foreach (IPEndPoint endPoint in ipEndPoints)
             {
-                if (endPoint.Port == _port)
+                if (endPoint.Port == port)
                 {
                     inUse = true;
                     break;
@@ -158,10 +156,10 @@ namespace NRobot.Server.Services
         		StringBuilder html = new StringBuilder();
         		//setup html doc
         		html.Append("<html><body><h1>NRobotRemote</h1><p><h2>Available Keywords</h2>");
-        	    var types = _keywordManager.GetLoadedTypeNames();
+        	    var types = keywordManager.GetLoadedTypeNames();
         	    foreach (var typename in types)
         	    {
-        	        var names = _keywordManager.GetKeywordNamesForType(typename);
+        	        var names = keywordManager.GetKeywordNamesForType(typename);
                     //per type table
         	        html.Append("<h3>Keywords from type: " + typename + "</h3>");
                     html.Append("<table style=\"text-align: left; width: 90%;\" border=\"1\" cellpadding=\"1\" cellspacing=\"0\">");
@@ -171,10 +169,8 @@ namespace NRobot.Server.Services
                     //add keywords
                     foreach (string name in names)
                     {
-                        var keyword = _keywordManager.GetKeyword(typename, name);
-                        html.Append(String.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>", name,
-                                                  String.Join(",", keyword.ArgumentNames),
-                                                  keyword.KeywordDocumentation));
+                        var keyword = keywordManager.GetKeyword(typename, name);
+                        html.Append($"<tr><td>{name}</td><td>{string.Join(",", keyword.ArgumentNames)}</td><td>{keyword.KeywordDocumentation}</td></tr>");
                     }
         	        html.Append("</tbody></table>");
         	    }
@@ -191,8 +187,6 @@ namespace NRobot.Server.Services
         		response.StatusCode = 500;
         	}
         	response.Close();
-        }
-		
-		
+        }		
 	}
 }
